@@ -44,7 +44,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => defineConfig(
     host: '0.0.0.0',
     port: 8080
   },
-  envDir: './env',
+  envDir: './',
   resolve: {
     alias: [{
       // https://github.com/vitejs/vite/issues/279#issuecomment-635646269
