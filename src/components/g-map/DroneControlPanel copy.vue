@@ -5,7 +5,6 @@
       <div class="box">
         <div class="row">
           <div class="drone-control"><Button :ghost="!flightController" size="small"  @click="onClickFightControl">{{ flightController ? 'Exit Remote Control' : 'Enter Remote Control'}}</Button></div>
-          <div class="drone-control"><Button size="small" ghost @click="onCloudControlAuth">Cloud Control Auth</Button></div>
         </div>
         <div class="row">
           <div class="drone-control-direction">
@@ -284,7 +283,7 @@ import { defineProps, reactive, ref, watch, computed, onMounted, watchEffect } f
 import { Select, message, Button } from 'ant-design-vue'
 import { PayloadInfo, DeviceInfoType, ControlSource, DeviceOsdCamera, DrcStateEnum } from '/@/types/device'
 import { useMyStore } from '/@/store'
-import { postDrcEnter, postDrcExit, postCloudControlAuth } from '/@/api/drc'
+import { postDrcEnter, postDrcExit } from '/@/api/drc'
 import { useMqtt, DeviceTopicInfo } from './use-mqtt'
 import { DownOutlined, UpOutlined, LeftOutlined, RightOutlined, PauseCircleOutlined, UndoOutlined, RedoOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons-vue'
 import { useManualControl, KeyCode } from './use-manual-control'
@@ -533,39 +532,6 @@ async function exitFlightCOntrol () {
       message.success('Exit flight control')
     }
   } catch (error: any) {
-  }
-}
-
-// 云端控制授权请求
-async function onCloudControlAuth () {
-  console.log('请求云端控制授权 - clientId:', clientId.value, 'sn:', props.sn)
-  if (!clientId.value) {
-    message.error('Client ID is empty, please ensure MQTT connection is established')
-    return
-  }
-  if (!props.sn) {
-    message.error('Device SN is empty')
-    return
-  }
-  try {
-    const { code } = await postCloudControlAuth({
-      client_id: clientId.value,
-      pilot_sn: props.sn,
-      expire_sec: 3600, // 默认1小时
-      device_info: {
-        osd_frequency: 1,
-        hsi_frequency: 1
-      }
-    })
-    if (code === 0) {
-      message.success('Cloud control auth request sent successfully')
-      console.log('云端控制授权请求发送成功')
-    } else {
-      message.error('Failed to send cloud control auth request')
-    }
-  } catch (error: any) {
-    console.error('云端控制授权请求失败:', error)
-    message.error('Failed to send cloud control auth request: ' + (error.message || 'Unknown error'))
   }
 }
 

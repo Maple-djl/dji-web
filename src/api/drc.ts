@@ -42,7 +42,7 @@ export interface DrcEnterResp {
 
 // 进入飞行控制 （建立drc连接&获取云控控制权）
 export async function postDrcEnter (body: DrcEnterBody): Promise<IWorkspaceResponse<DrcEnterResp>> {
-  const resp = await request.post(`${DRC_API_PREFIX}/workspaces/${workspaceId}/drc/enter`, body)
+  const resp = await request.post(`${DRC_API_PREFIX}/workspaces/${workspaceId}/rc/drc/enter`, body)
   return resp.data
 }
 
@@ -53,6 +53,22 @@ export interface DrcExitBody {
 
 // 退出飞行控制 （退出drc连接&退出云控控制权）
 export async function postDrcExit (body: DrcExitBody): Promise<IWorkspaceResponse<null>> {
-  const resp = await request.post(`${DRC_API_PREFIX}/workspaces/${workspaceId}/drc/exit`, body)
+  const resp = await request.post(`${DRC_API_PREFIX}/workspaces/${workspaceId}/rc/drc/exit`, body)
+  return resp.data
+}
+
+export interface CloudControlAuthBody {
+  client_id: string
+  pilot_sn: string
+  expire_sec?: number // 过期时间，单位秒，默认3600
+  device_info?: {
+    osd_frequency?: number
+    hsi_frequency?: number
+  }
+}
+
+// 云端控制授权请求
+export async function postCloudControlAuth (body: CloudControlAuthBody): Promise<IWorkspaceResponse<null>> {
+  const resp = await request.post(`${DRC_API_PREFIX}/workspaces/${workspaceId}/rc/drc/cloudControlAuth`, body)
   return resp.data
 }

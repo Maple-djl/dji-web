@@ -10,7 +10,7 @@ import { useDirectives } from './directives'
 import '/@/styles/index.scss'
 const app = createInstance(App)
 
-app.use(store, storeKey)
+app.use(store)
 app.use(router)
 app.use(CommonComponents)
 app.use(antComponents)

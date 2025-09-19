@@ -140,6 +140,8 @@
           {{ 10 > (deviceInfo.device.battery.remain_flight_time % 60) ? '0' : ''}}{{deviceInfo.device.battery.remain_flight_time % 60 }}
         </div>
       </div>
+      <!-- 飞行指令 -->
+      <DroneControlPanel :sn="osdVisible.gateway_sn" :deviceInfo="deviceInfo" :payloads="osdVisible.payloads"></DroneControlPanel>
     </div>
     <!-- 机场OSD -->
     <div v-if="osdVisible.visible && osdVisible.is_dock"  v-drag-window class="osd-panel fz12">
@@ -147,6 +149,7 @@
         <span>{{ osdVisible.gateway_callsign }}</span>
       </div>
       <span><a style="color: white; position: absolute; top: 5px; right: 5px;" @click="() => osdVisible.visible = false"><CloseOutlined /></a></span>
+
         <!-- 机场 -->
       <div class ="flex-display" style="border-bottom: 1px solid #515151;">
         <div class="flex-column flex-align-stretch flex-justify-center" style="width: 60px; background: #2d2d2d;">

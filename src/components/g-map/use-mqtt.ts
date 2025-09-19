@@ -130,5 +130,6 @@ export function useMqtt (deviceTopicInfo: DeviceTopicInfo) {
     mqttState,
     publishMqtt,
     subscribeMqtt,
+    heartBeatSeq, // 返回心跳序列号
   }
 }

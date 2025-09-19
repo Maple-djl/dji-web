@@ -24,7 +24,7 @@ type StatusOptions = {
 export function useConnectMqtt () {
   const store = useMyStore()
   const dockOsdVisible = computed(() => {
-    return store.state.osdVisible && store.state.osdVisible.visible && store.state.osdVisible.is_dock
+    return store.state.osdVisible && store.state.osdVisible.visible
   })
   const mqttState = ref<UranusMqtt | null>(null)
 

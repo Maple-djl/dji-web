@@ -263,5 +263,5 @@ type AllStateStoreTypes = RootStateType & {
 }
 
 export function useMyStore<T = AllStateStoreTypes> () {
-  return useStore<T>(storeKey)
+  return useStore<T>()
 }

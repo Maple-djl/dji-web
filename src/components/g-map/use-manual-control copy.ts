@@ -15,7 +15,6 @@ import {
 } from './use-mqtt'
 
 let myInterval: any
-let drcSubscribeInterval: any
 
 export enum KeyCode {
   KEY_W = 'KeyW',
@@ -43,89 +42,12 @@ export function useManualControl (deviceTopicInfo: DeviceTopicInfo, isCurrentFli
 
     handleClearInterval()
     myInterval = setInterval(() => {
-      body.data.seq = ++seq
+      body.data.seq = seq++
+      seq++
       window.console.log('keyCode>>>>', activeCodeKey.value, body)
       console.log('Publishing to topic:', deviceTopicInfo.pubTopic, 'body:', body)
       mqttHooks?.publishMqtt(deviceTopicInfo.pubTopic, body, { qos: 0 })
     }, 50)
-  }
-
-  // DRC杆量控制函数 - 支持连续发送
-  function handleStickControl (stickData: { throttle?: number, roll?: number, pitch?: number, yaw?: number }) {
-    console.log('🎮 开始DRC杆量控制:', stickData)
-
-    handleClearInterval()
-    myInterval = setInterval(() => {
-      const body = {
-        seq: ++seq,
-        method: 'stick_control',
-        data: {
-          roll: stickData.roll || 1024,
-          pitch: stickData.pitch || 1024,
-          throttle: stickData.throttle || 1024,
-          yaw: stickData.yaw || 1024
-        }
-      }
-
-      console.log('🎮 DRC杆量控制命令:', {
-        topic: deviceTopicInfo.pubTopic,
-        body: body
-      })
-
-      mqttHooks?.publishMqtt(deviceTopicInfo.pubTopic, body, { qos: 0 })
-    }, 50) // 20Hz频率，与其他按键保持一致
-  }
-
-  // DRC初始状态订阅 - 定时发送
-  function startDrcInitialStateSubscribe () {
-    if (!deviceTopicInfo.pubTopic) {
-      console.error('DRC链路未建立 - pubTopic为空')
-      return
-    }
-
-    // 清除之前的定时器
-    clearInterval(drcSubscribeInterval)
-
-    // 立即发送一次
-    sendDrcInitialStateSubscribe()
-
-    // 设置定时器，每5秒发送一次
-    drcSubscribeInterval = setInterval(() => {
-      sendDrcInitialStateSubscribe()
-    }, 5000)
-
-    console.log('📡 启动DRC初始状态订阅定时器，每5秒发送一次')
-  }
-
-  // 停止DRC初始状态订阅定时器
-  function stopDrcInitialStateSubscribe () {
-    if (drcSubscribeInterval) {
-      clearInterval(drcSubscribeInterval)
-      drcSubscribeInterval = null
-      console.log('📡 停止DRC初始状态订阅定时器')
-    }
-  }
-
-  // 发送DRC初始状态订阅消息
-  function sendDrcInitialStateSubscribe () {
-    if (!deviceTopicInfo.pubTopic) {
-      console.error('DRC链路未建立 - pubTopic为空')
-      return
-    }
-
-    const body = {
-      seq: mqttHooks.heartBeatSeq.value + 1, // 使用心跳序列号+1，保持连续性
-      method: 'drc_initial_state_subscribe',
-      data: {}
-    }
-
-    console.log('📡 发送DRC初始状态订阅:', {
-      topic: deviceTopicInfo.pubTopic,
-      body: body,
-      heartBeatSeq: mqttHooks.heartBeatSeq.value
-    })
-
-    mqttHooks?.publishMqtt(deviceTopicInfo.pubTopic, body, { qos: 0 })
   }
 
   function handleKeyup (keyCode: KeyCode) {
@@ -171,8 +93,7 @@ export function useManualControl (deviceTopicInfo: DeviceTopicInfo, isCurrentFli
         break
       case 'ArrowUp':
         if (activeCodeKey.value === keyCode) return
-        // ArrowUp: DRC杆量控制 - 升降上升
-        handleStickControl({ throttle: 1684 }) // 最大上升值
+        handlePublish({ h: HEIGHT })
         activeCodeKey.value = keyCode
         break
       case 'ArrowDown':
@@ -204,7 +125,6 @@ export function useManualControl (deviceTopicInfo: DeviceTopicInfo, isCurrentFli
     activeCodeKey.value = null
     seq = 0
     handleClearInterval()
-    stopDrcInitialStateSubscribe()
   }
 
   function onKeyup () {
@@ -229,13 +149,8 @@ export function useManualControl (deviceTopicInfo: DeviceTopicInfo, isCurrentFli
   watch(() => isCurrentFlightController.value, (val) => {
     if (val && deviceTopicInfo.pubTopic) {
       startKeyboardManualControl()
-      // DRC连接建立后，启动初始状态订阅定时器
-      setTimeout(() => {
-        startDrcInitialStateSubscribe()
-      }, 500) // 延迟500ms确保连接稳定
     } else {
       closeKeyboardManualControl()
-      stopDrcInitialStateSubscribe()
     }
   }, { immediate: true })
 
@@ -257,39 +172,10 @@ export function useManualControl (deviceTopicInfo: DeviceTopicInfo, isCurrentFli
     mqttHooks?.publishMqtt(deviceTopicInfo.pubTopic, body, { qos: 1 })
   }
 
-  // DRC相机模式切换
-  function handleDrcCameraModeSwitch (payloadIndex: string, cameraMode: number) {
-    if (!deviceTopicInfo.pubTopic) {
-      message.error('请确保已经建立DRC链路')
-      return
-    }
-
-    const body = {
-      seq: mqttHooks.heartBeatSeq.value + 1, // 使用心跳序列号+1，保持连续性
-      method: 'drc_camera_mode_switch',
-      data: {
-        payload_index: payloadIndex,
-        camera_mode: cameraMode
-      }
-    }
-
-    console.log('📷 DRC相机模式切换:', {
-      topic: deviceTopicInfo.pubTopic,
-      body: body,
-      heartBeatSeq: mqttHooks.heartBeatSeq.value
-    })
-
-    mqttHooks?.publishMqtt(deviceTopicInfo.pubTopic, body, { qos: 0 })
-  }
-
   return {
     activeCodeKey,
     handleKeyup,
     handleEmergencyStop,
     resetControlState,
-    sendDrcInitialStateSubscribe,
-    startDrcInitialStateSubscribe,
-    stopDrcInitialStateSubscribe,
-    handleDrcCameraModeSwitch,
   }
 }
