@@ -8,37 +8,37 @@ console.log('Environment variables:', {
 
 export const CURRENT_CONFIG = {
 
-  // license
-  appId: import.meta.env.VITE_APP_ID || 'Please enter the app id.', // You need to go to the development website to apply.
-  appKey: import.meta.env.VITE_APP_KEY || 'Please enter the app key.', // You need to go to the development website to apply.
-  appLicense: import.meta.env.VITE_APP_LICENSE || 'Please enter the app license.', // You need to go to the development website to apply.
+  // license - 您申请的DJI Cloud API许可证 (硬编码)
+  appId: '161476', // 您的App ID
+  appKey: '9437ef02cb06c19c91795e8e99e6243', // 您的App Key
+  appLicense: 'ZjlT38x//cTLTykle1cze4AtD8IYCKKrRtJs0XGGk16BSlJRy9/NfCGG32S9/Tw3W12AsO/bkwxsclBw0H6yKxYTpR6FljmQuJE7mu5JFPRjNKYrfIqi7q4bxecSjGXdx/dy7igKfPe6luOOS/vzol4LEvywzRPUHE+6RoyQ9e4=', // 您的App License
 
-  // http
-  baseURL: import.meta.env.VITE_BASE_URL || 'Please enter the backend access address prefix.', // This url must end with "/". Example: 'http://192.168.1.1:6789/'
-  websocketURL: import.meta.env.VITE_WEBSOCKET_URL || 'Please enter the WebSocket access address.', // Example: 'ws://192.168.1.1:6789/api/v1/ws'
+  // http - 后端服务地址
+  baseURL: import.meta.env.VITE_BASE_URL || 'http://192.168.31.223:8042/', // 后端API地址
+  websocketURL: import.meta.env.VITE_WEBSOCKET_URL || 'ws://192.168.31.223:8042/api/v1/ws', // WebSocket地址
 
-  // livestreaming
+  // livestreaming - 直播流配置
   // RTMP  Note: This IP is the address of the streaming server. If you want to see livestream on web page, you need to convert the RTMP stream to WebRTC stream.
-  rtmpURL: import.meta.env.VITE_RTMP_URL || 'Please enter the rtmp access address.', // Example: 'rtmp://192.168.1.1/live/'
+  rtmpURL: import.meta.env.VITE_RTMP_URL || 'rtmp://192.168.31.223:1935/live/', // RTMP流地址
   // GB28181 Note:If you don't know what these parameters mean, you can go to Pilot2 and select the GB28181 page in the cloud platform. Where the parameters same as these parameters.
-  gbServerIp: 'Please enter the server ip.',
-  gbServerPort: 'Please enter the server port.',
-  gbServerId: 'Please enter the server id.',
-  gbAgentId: 'Please enter the agent id',
-  gbPassword: 'Please enter the agent password',
-  gbAgentPort: 'Please enter the local port.',
-  gbAgentChannel: 'Please enter the channel.',
+  gbServerIp: import.meta.env.VITE_GB_SERVER_IP || '192.168.31.223',
+  gbServerPort: import.meta.env.VITE_GB_SERVER_PORT || '5060',
+  gbServerId: import.meta.env.VITE_GB_SERVER_ID || 'your_gb_server_id',
+  gbAgentId: import.meta.env.VITE_GB_AGENT_ID || 'your_gb_agent_id',
+  gbPassword: import.meta.env.VITE_GB_PASSWORD || 'your_gb_password',
+  gbAgentPort: import.meta.env.VITE_GB_AGENT_PORT || '5060',
+  gbAgentChannel: import.meta.env.VITE_GB_AGENT_CHANNEL || 'your_gb_channel',
   // RTSP
-  rtspUserName: 'Please enter the username.',
-  rtspPassword: 'Please enter the password.',
-  rtspPort: '8554',
+  rtspUserName: import.meta.env.VITE_RTSP_USERNAME || 'your_rtsp_username',
+  rtspPassword: import.meta.env.VITE_RTSP_PASSWORD || 'your_rtsp_password',
+  rtspPort: import.meta.env.VITE_RTSP_PORT || '8554',
   // Agora
-  agoraAPPID: import.meta.env.VITE_AGORA_APP_ID || 'Please enter the agora app id.',
-  agoraToken: import.meta.env.VITE_AGORA_TOKEN || 'Please enter the agora temporary token.',
-  agoraChannel: import.meta.env.VITE_AGORA_CHANNEL || 'Please enter the agora channel.',
+  agoraAPPID: import.meta.env.VITE_AGORA_APP_ID || 'your_agora_app_id',
+  agoraToken: import.meta.env.VITE_AGORA_TOKEN || 'your_agora_token',
+  agoraChannel: import.meta.env.VITE_AGORA_CHANNEL || 'your_agora_channel',
 
-  // map
+  // map - 高德地图配置
   // You can apply on the AMap website.
-  amapKey: import.meta.env.VITE_AMAP_KEY || 'Please enter the amap key.',
+  amapKey: import.meta.env.VITE_AMAP_KEY || '4846f53dd7ee912f227720624b9a436c', // 您的高德地图API Key
 
 }
